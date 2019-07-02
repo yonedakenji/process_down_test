@@ -2,6 +2,6 @@
 set -e
 
 # copy from run file for apache. -> Apache gets grumpy about PID files pre-existing
-rm -f /system/MW/mysql/data/mysql.pid
+rm -f /var/run/mariadb/mariadb.pid
 
-exec /system/MW/mysql/bin/mysqld --defaults-file=/system/MW/mysql/data/my.cnf --basedir=/system/MW/mysql --datadir=/system/MW/mysql/data --user=mysql --pid-file=/system/MW/mysql/data/mysql.pid --open-files-limit=8192 --port=3306
+exec cd '/usr' ; /usr/bin/mysqld_safe --datadir='/var/lib/mysql'
