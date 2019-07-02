@@ -1,4 +1,4 @@
-FROM base
+FROM yonedakenji/base
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
