@@ -38,7 +38,8 @@ RUN curl -LO https://archive.apache.org/dist/tomcat/tomcat-8/v8.0.53/bin/${TOMCA
 ENV PATH ${CATALINA_HOME}/bin:$PATH
 
 ### MySQL ###
-RUN /usr/bin/mysql_install_db
+RUN /usr/bin/mysql_install_db && \
+    chown -R mysql:mysql /var/lib/mysql/
 
 ### set up deamons ###
 RUN mkdir /etc/service/httpd && \
