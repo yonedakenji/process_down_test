@@ -17,7 +17,7 @@ ENV CLASSPATH=.:$JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar
 ### httpd ###
 ARG HTTPD_VER=2.2.34
 ARG HTTPD_FILE=httpd-${HTTPD_VER}.tar.gz
-RUN curl -LO https://archive.apache.org/dist/httpd/httpd-${HTTPD_FILE}.tar.gz && \
+RUN curl -LO https://archive.apache.org/dist/httpd/${HTTPD_FILE} && \
     tar xzf ${HTTPD_FILE} && \
     rm -f ${HTTPD_FILE} && \
     cd httpd-${HTTPD_VER} && \
