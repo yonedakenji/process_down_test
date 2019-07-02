@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+# copy from run file for apache. -> Apache gets grumpy about PID files pre-existing
+rm -f /system/MW/mysql/data/mysql.pid
+
+exec /system/MW/mysql/bin/mysqld --defaults-file=/system/MW/mysql/data/my.cnf --basedir=/system/MW/mysql --datadir=/system/MW/mysql/data --user=mysql --pid-file=/system/MW/mysql/data/mysql.pid --open-files-limit=8192 --port=3306

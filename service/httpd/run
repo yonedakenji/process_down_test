@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+# Apache gets grumpy about PID files pre-existing
+rm -f /system/MW/apache/logs/httpd.pid
+
+exec httpd -DFOREGROUND
