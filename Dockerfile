@@ -48,6 +48,7 @@ RUN mkdir /etc/service/httpd && \
 COPY service/httpd/run /etc/service/httpd
 COPY service/tomcat/run /etc/service/tomcat
 COPY service/mysql/run /etc/service/mysql
+RUN chmod 755 /etc/service/httpd/run /etc/service/tomcat/run /etc/service/mysql/run
 
 ### clean up ###
 
