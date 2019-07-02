@@ -38,18 +38,7 @@ RUN curl -LO https://archive.apache.org/dist/tomcat/tomcat-8/v8.0.53/bin/${TOMCA
 ENV PATH ${CATALINA_HOME}/bin:$PATH
 
 ### MySQL ###
-ARG MYSQL_VER=5.6.44
-ARG MYSQL_FILE=mysql-${MYSQL_VER}-linux-glibc2.12-x86_64.tar.gz
-RUN curl -L https://dev.mysql.com/downloads/file/?id=485087 -o ${MYSQL_FILE} && \
-    tar xfz ${MYSQL_FILE} && \
-    rm ${MYSQL_FILE} && \
-    ln -s mysql-${MYSQL_VER}-linux-glibc2.12-x86_64 mysql && \
-    cp -p ${SYS_DIR}/mysql/support-files/my-default.cnf ${SYS_DIR}/mysql/data/my.cnf && \
-    cd ${SYS_DIR}/mysql && \
-    ./scripts/mysql_install_db && \
-    cd ${WORKDIR} && \
-    chown -R mysql:mysql ${SYS_DIR}/mysql-${MYSQL_VER}-linux-glibc2.12-x86_64
-ENV PATH ${SYS_DIR}/mysql/bin:$PATH
+RUN /usr/bin/mysql_install_db
 
 ### set up deamons ###
 RUN mkdir /etc/service/httpd && \
