@@ -4,4 +4,5 @@ set -e
 # Apache gets grumpy about PID files pre-existing
 rm -f /system/MW/apache/logs/httpd.pid
 
-exec httpd -DFOREGROUND
+#exec httpd -DFOREGROUND
+exec /system/MW/apache/bin/httpd -DNO_DETACH
