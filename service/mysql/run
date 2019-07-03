@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-# copy from run file for apache. -> Apache gets grumpy about PID files pre-existing
 rm -f /var/run/mariadb/mariadb.pid
 
-exec /usr/bin/mysqld_safe --datadir='/var/lib/mysql'
+exec /usr/libexec/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib64/mysql/plugin --user=mysql \
+                         --log-error=/var/log/mariadb/mariadb.log --pid-file=/var/run/mariadb/mariadb.pid \
+                         --socket=/var/lib/mysql/mysql.sock
