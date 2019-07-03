@@ -4,4 +4,4 @@ set -e
 # copy from run file for apache. -> Apache gets grumpy about PID files pre-existing
 rm -f /var/run/mariadb/mariadb.pid
 
-exec cd '/usr' ; /usr/bin/mysqld_safe --datadir='/var/lib/mysql'
+exec /usr/bin/mysqld_safe --datadir='/var/lib/mysql'
