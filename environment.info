@@ -1,0 +1,22 @@
+[topjax@testhost ~]$ cat /etc/os-release
+NAME="Red Hat Enterprise Linux Server"
+VERSION="7.3 (Maipo)"
+ID="rhel"
+ID_LIKE="fedora"
+VERSION_ID="7.3"
+PRETTY_NAME="Red Hat Enterprise Linux"
+ANSI_COLOR="0;31"
+CPE_NAME="cpe:/o:redhat:enterprise_linux:7.3:GA:server"
+HOME_URL="https://www.redhat.com/"
+BUG_REPORT_URL="https://bugzilla.redhat.com/"
+
+REDHAT_BUGZILLA_PRODUCT="Red Hat Enterprise Linux 7"
+REDHAT_BUGZILLA_PRODUCT_VERSION=7.3
+REDHAT_SUPPORT_PRODUCT="Red Hat Enterprise Linux"
+REDHAT_SUPPORT_PRODUCT_VERSION="7.3"
+[topjax@testhost ~]$ rpm -qa | grep -i docker
+docker-rhel-push-plugin-1.13.1-88.git07f3374.el7.x86_64
+docker-client-1.13.1-88.git07f3374.el7.x86_64
+docker-1.13.1-88.git07f3374.el7.x86_64
+docker-common-1.13.1-88.git07f3374.el7.x86_64
+[topjax@tjaxidc00 ~]$
