@@ -1,0 +1,184 @@
+[root@testhost process_down_test]# docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+docker.io/centos    7.1.1503            e1430271e2f9        3 months ago        212 MB
+[root@testhost process_down_test]# docker pull yonedakenji/process_down_test
+Using default tag: latest
+Trying to pull repository registry.access.redhat.com/yonedakenji/process_down_test ...
+Pulling repository registry.access.redhat.com/yonedakenji/process_down_test
+Trying to pull repository docker.io/yonedakenji/process_down_test ...
+latest: Pulling from docker.io/yonedakenji/process_down_test
+c6fb3d2c9cb8: Already exists
+391d13e4ad83: Pull complete
+3a30b3d44059: Pull complete
+c86af68c9fd7: Pull complete
+cbcad85b5e2e: Pull complete
+6fa1d9bf8d37: Pull complete
+d98b5c6f60d2: Pull complete
+d4ffa31a6a02: Pull complete
+21158b26d931: Pull complete
+2c181949cf40: Pull complete
+89628b7c8777: Pull complete
+b3ca0b6d6f21: Pull complete
+82e127819fa3: Pull complete
+8973d415b484: Pull complete
+8187e8b93624: Pull complete
+f6ed7aeec964: Pull complete
+347f1c79a1cc: Pull complete
+7afd6eb6aa12: Pull complete
+ce816fb42892: Pull complete
+f567e33a777f: Pull complete
+427c72214c0f: Pull complete
+7f7e911f82c4: Pull complete
+Digest: sha256:7567fbc087eed1417fc6d6dded07504a6eb32904304513c5c49920cdd747b951
+Status: Downloaded newer image for docker.io/yonedakenji/process_down_test:latest
+[root@testhost process_down_test]# docker images
+REPOSITORY                                TAG                 IMAGE ID            CREATED             SIZE
+docker.io/yonedakenji/process_down_test   latest              62859dcabc6c        16 hours ago        1.82 GB
+docker.io/centos                          7.1.1503            e1430271e2f9        3 months ago        212 MB
+[root@testhost process_down_test]# docker run --name process_down_test --hostname process_down_test -itd yonedakenji/process_down_test
+be5d1dedb696a72ce8e76854618b3933575b7d0e68f81c25599e88acb6ddb773
+[root@testhost process_down_test]# docker ps -a
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                      PORTS               NAMES
+be5d1dedb696        yonedakenji/process_down_test   "/sbin/my_init"          4 seconds ago       Up 3 seconds                80/tcp              process_down_test
+[root@testhost process_down_test]# docker exec -it process_down_test /bin/bash
+[root@process_down_test MW]# touch somefile
+[root@process_down_test MW]# exit
+[root@testhost process_down_test]# docker stop process_down_test
+process_down_test
+[root@testhost process_down_test]# docker commit process_down_test process_down_test_commit
+sha256:2da75dd1d9de6509be3d9dc3a185983515a1da627d7f4926cd78b70ed10041ee
+[root@testhost process_down_test]# docker images
+REPOSITORY                                TAG                 IMAGE ID            CREATED             SIZE
+process_down_test_commit                  latest              2da75dd1d9de        9 seconds ago       1.85 GB
+docker.io/yonedakenji/process_down_test   latest              62859dcabc6c        16 hours ago        1.82 GB
+docker.io/centos                          7.1.1503            e1430271e2f9        3 months ago        212 MB
+[root@testhost process_down_test]# docker run --name process_down_test_01 --hostname process_down_test_01 -itd process_down_test_commit
+fcd52b46d549c56979fba8e3c85cb57a853476b09f3f7b65d35c281029acc92e
+[root@testhost process_down_test]# docker run --name process_down_test_02 --hostname process_down_test_02 -itd process_down_test_commit
+e882dc84841c6e143eca4ff8960c0f01cb189660c3deb92527daec06316d5541
+[root@testhost process_down_test]# docker ps -a
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                          PORTS               NAMES
+e882dc84841c        process_down_test_commit        "/sbin/my_init"          6 seconds ago       Up 5 seconds                    80/tcp              process_down_test_02
+fcd52b46d549        process_down_test_commit        "/sbin/my_init"          23 seconds ago      Up 22 seconds                   80/tcp              process_down_test_01
+be5d1dedb696        yonedakenji/process_down_test   "/sbin/my_init"          2 minutes ago       Exited (2) About a minute ago                       process_down_test
+[root@testhost process_down_test]# docker exec -it process_down_test_01 /bin/bash
+[root@process_down_test_01 MW]# ps -ef
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 10:06 ?        00:00:00 /usr/local/bin/python3 -u /sbin/my_init
+root        12     1  0 10:06 ?        00:00:00 /usr/local/sbin/syslog-ng --pidfile /var/run/syslog-ng.pid -F --no-caps
+root        19     1  0 10:06 ?        00:00:00 /usr/local/bin/runsvdir -P /etc/service
+root        20    19  0 10:06 ?        00:00:00 runsv cron
+root        21    19  0 10:06 ?        00:00:00 runsv sshd
+root        22    19  0 10:06 ?        00:00:00 runsv httpd
+root        23    19  0 10:06 ?        00:00:00 runsv mysql
+root        24    19  0 10:06 ?        00:00:00 runsv tomcat
+root        25    20  0 10:06 ?        00:00:00 /usr/sbin/crond -n -s
+mysql       26    23  1 10:06 ?        00:00:00 /usr/libexec/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib64/mysql/plugin --user=mysql --log-error=/var/log/mariadb/mariadb.lo
+root        27    24 26 10:06 ?        00:00:02 /system/MW/java/bin/java -Djava.util.logging.config.file=/system/MW/tomcat/conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassL
+root        28    22  0 10:06 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+daemon      32    28  0 10:06 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+daemon      33    28  0 10:06 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+daemon      34    28  0 10:06 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+daemon      35    28  0 10:06 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+daemon      36    28  0 10:06 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+root        76     0  1 10:06 ?        00:00:00 /bin/bash
+root        89    76  0 10:06 ?        00:00:00 ps -ef
+[root@process_down_test_01 MW]# exit
+[root@testhost process_down_test]# docker exec -it process_down_test_02 /bin/bash
+[root@process_down_test_02 MW]# ps -ef
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 10:06 ?        00:00:00 /usr/local/bin/python3 -u /sbin/my_init
+root        12     1  0 10:06 ?        00:00:00 /usr/local/sbin/syslog-ng --pidfile /var/run/syslog-ng.pid -F --no-caps
+root        19     1  0 10:06 ?        00:00:00 /usr/local/bin/runsvdir -P /etc/service
+root        20    19  0 10:06 ?        00:00:00 runsv cron
+root        21    19  0 10:06 ?        00:00:00 runsv sshd
+root        22    19  0 10:06 ?        00:00:00 runsv httpd
+root        23    19  0 10:06 ?        00:00:00 runsv tomcat
+root        24    19  0 10:06 ?        00:00:00 runsv mysql
+mysql       25    24  0 10:06 ?        00:00:00 /usr/libexec/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib64/mysql/plugin --user=mysql --log-error=/var/log/mariadb/mariadb.lo
+root        26    20  0 10:06 ?        00:00:00 /usr/sbin/crond -n -s
+root        27    23 11 10:06 ?        00:00:02 /system/MW/java/bin/java -Djava.util.logging.config.file=/system/MW/tomcat/conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassL
+root        31    22  0 10:06 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+daemon      35    31  0 10:06 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+daemon      36    31  0 10:06 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+daemon      37    31  0 10:06 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+daemon      38    31  0 10:06 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+daemon      39    31  0 10:06 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+root        76     0  0 10:06 ?        00:00:00 /bin/bash
+root        89    76  0 10:06 ?        00:00:00 ps -ef
+[root@process_down_test_02 MW]# exit
+[root@testhost process_down_test]# ./process_down_test.sh
+2019”N  7ŒŽ  4“ú –Ø—j“ú 10:06:52 JST
+COUNT:1
+docker stop process_down_test_02
+process_down_test_02
+docker start process_down_test_02
+process_down_test_02
+docker_top_check process_down_test_01
+process_down_test_01 mysql_exist:1
+process_down_test_01 tomcat_exist:1
+process_down_test_01 httpd_exist:6
+process_down_test_01 mysql_exist * tomcat_exist * httpd_exist:6
+2019”N  7ŒŽ  4“ú –Ø—j“ú 10:07:09 JST
+COUNT:2
+docker stop process_down_test_02
+process_down_test_02
+docker start process_down_test_02
+process_down_test_02
+docker_top_check process_down_test_01
+process_down_test_01 mysql_exist:1
+process_down_test_01 tomcat_exist:1
+process_down_test_01 httpd_exist:6
+process_down_test_01 mysql_exist * tomcat_exist * httpd_exist:6
+2019”N  7ŒŽ  4“ú –Ø—j“ú 10:07:22 JST
+COUNT:3
+docker stop process_down_test_02
+process_down_test_02
+docker start process_down_test_02
+process_down_test_02
+docker_top_check process_down_test_01
+process_down_test_01 mysql_exist:1
+process_down_test_01 tomcat_exist:0
+process_down_test_01 httpd_exist:0
+process_down_test_01 mysql_exist * tomcat_exist * httpd_exist:0
+exit
+[root@testhost process_down_test]# docker exec -it process_down_test_01 /bin/bash
+[root@process_down_test_01 MW]# ps -ef
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 10:06 ?        00:00:00 /usr/local/bin/python3 -u /sbin/my_init
+root        12     1  0 10:06 ?        00:00:00 /usr/local/sbin/syslog-ng --pidfile /var/run/syslog-ng.pid -F --no-caps
+root        19     1  0 10:06 ?        00:00:00 /usr/local/bin/runsvdir -P /etc/service
+root        20    19  0 10:06 ?        00:00:00 runsv cron
+root        21    19  0 10:06 ?        00:00:00 runsv sshd
+root        22    19  0 10:06 ?        00:00:00 runsv httpd
+root        23    19  0 10:06 ?        00:00:00 runsv mysql
+root        24    19  0 10:06 ?        00:00:00 runsv tomcat
+root        25    20  0 10:06 ?        00:00:00 /usr/sbin/crond -n -s
+mysql       26    23  0 10:06 ?        00:00:00 /usr/libexec/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib64/mysql/plugin --user=mysql --log-error=/var/log/mariadb/mariadb.lo
+root        93     0  1 10:07 ?        00:00:00 /bin/bash
+root       106    93  0 10:07 ?        00:00:00 ps -ef
+[root@process_down_test_01 MW]# exit
+[root@testhost process_down_test]# docker exec -it process_down_test_02 /bin/bash
+[root@process_down_test_02 MW]# ps -ef
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 10:07 ?        00:00:00 /usr/local/bin/python3 -u /sbin/my_init
+root        12     1  0 10:07 ?        00:00:00 /usr/local/sbin/syslog-ng --pidfile /var/run/syslog-ng.pid -F --no-caps
+root        19     1  0 10:07 ?        00:00:00 /usr/local/bin/runsvdir -P /etc/service
+root        20    19  0 10:07 ?        00:00:00 runsv cron
+root        21    19  0 10:07 ?        00:00:00 runsv sshd
+root        22    19  0 10:07 ?        00:00:00 runsv httpd
+root        23    19  0 10:07 ?        00:00:00 runsv tomcat
+root        24    19  0 10:07 ?        00:00:00 runsv mysql
+root        25    20  0 10:07 ?        00:00:00 /usr/sbin/crond -n -s
+root        26    22  0 10:07 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+root        28    23  8 10:07 ?        00:00:02 /system/MW/java/bin/java -Djava.util.logging.config.file=/system/MW/tomcat/conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassL
+mysql       29    24  0 10:07 ?        00:00:00 /usr/libexec/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib64/mysql/plugin --user=mysql --log-error=/var/log/mariadb/mariadb.lo
+daemon      31    26  0 10:07 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+daemon      32    26  0 10:07 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+daemon      33    26  0 10:07 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+daemon      34    26  0 10:07 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+daemon      35    26  0 10:07 ?        00:00:00 /system/MW/apache/bin/httpd -DNO_DETACH
+root        76     0  1 10:07 ?        00:00:00 /bin/bash
+root        89    76  0 10:07 ?        00:00:00 ps -ef
+[root@process_down_test_02 MW]# exit
+[root@testhost process_down_test]#
