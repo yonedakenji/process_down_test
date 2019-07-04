@@ -32,9 +32,9 @@ do
     echo "COUNT:$i"
     echo "docker stop $RESTART_CONTAINER"
           docker stop $RESTART_CONTAINER
-    echo "docker start $RESTART_CONTAINER"
-          docker start $RESTART_CONTAINER
     echo "docker_top_check $TARGET_CONTAINER"
           docker_top_check $TARGET_CONTAINER
+    echo "docker start $RESTART_CONTAINER"
+          docker start $RESTART_CONTAINER
     sleep 10s
 done
